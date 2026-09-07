@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aaea3ec9-2a10-47bf-a505-24e0bd135ea5" name="Changes" comment="Primer commit" />
+    <list default="true" id="aaea3ec9-2a10-47bf-a505-24e0bd135ea5" name="Changes" comment="Primer commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/demopatrones/ui/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/demopatrones/ui/HelloApplication.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,18 +23,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Rrodrovan"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Rrodrovan&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:/Rrodrovan/PatronDecortorProxyMvn.git",
-    "accountId": "ae0347c2-ec0f-4d82-8477-51724176e5da"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:/Rrodrovan/PatronDecortorProxyMvn.git&quot;,
+    &quot;accountId&quot;: &quot;ae0347c2-ec0f-4d82-8477-51724176e5da&quot;
   }
-}]]></component>
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -45,8 +51,11 @@
   "keyToString": {
     "Application.HelloApplication.executor": "Run",
     "Application.MainLauncher.executor": "Run",
+    "Maven.PatronDecortorProxyMvn [clean].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/DELL/IdeaProjects/PatronDecortorProxyMvn",
     "project.structure.last.edited": "Modules",
@@ -69,6 +78,15 @@
       <option name="presentableId" value="Default" />
       <updated>1788446726361</updated>
     </task>
+    <task id="LOCAL-00001" summary="Primer commit">
+      <option name="closed" value="true" />
+      <created>1788760207121</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1788760207121</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
