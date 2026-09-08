@@ -24,7 +24,7 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Demostración Arquitectura de Patrones: Proxy & Decorator");
+        primaryStage.setTitle("Demostración de Patrones: Proxy & Decorator");
 
         TextField txtUsuario = new TextField("Carlos");
         Button btnBase = new Button("1. Servicio Base");
@@ -55,7 +55,7 @@ public class HelloApplication extends Application {
             prepararEjecucion(areaReporte, lblEstado, txtAuditoria, "Cargando servicio base...");
 
             txtAuditoria.appendText("=== PRUEBA 1: SERVICIO BASE (SIN PATRONES) ===\n");
-            txtAuditoria.appendText("[CLIENTE] Solicitando informe directamente a 'ReporteServiceImpl'...\n");
+            txtAuditoria.appendText("[CLIENTE] Pidiendo el gráfico directamente a la Base de Datos...\n");
 
             new Thread(() -> {
                 long t1 = System.currentTimeMillis();
@@ -64,8 +64,8 @@ public class HelloApplication extends Application {
 
                 Platform.runLater(() -> {
                     mostrarReporte(areaReporte, reporte, lblTiempo, (t2 - t1), lblEstado, "Procesado en BD Real");
-                    txtAuditoria.appendText("[BASE BD] Simulación de consulta pesada completada (" + (t2 - t1) + "ms).\n");
-                    txtAuditoria.appendText("[ALERTA] Peticiones repetidas causarán latencia constante al usuario.\n");
+                    txtAuditoria.appendText("[BASE BD] Consulta pesada terminada en " + (t2 - t1) + " ms.\n");
+                    txtAuditoria.appendText("[PROBLEMA] Si volvemos a pedirlo, va a volver a tardar lo mismo porque no guarda nada.\n");
                 });
             }).start();
         });
@@ -74,26 +74,26 @@ public class HelloApplication extends Application {
         btnProxy.setOnAction(e -> {
             prepararEjecucion(areaReporte, lblEstado, txtAuditoria, "Consultando Proxy...");
 
-            txtAuditoria.appendText("=== PRUEBA 2: PATRÓN PROXY (CONTROL Y CACHÉ) ===\n");
-            txtAuditoria.appendText("[CLIENTE] Enviando petición a 'ReporteProxy'...\n");
+            txtAuditoria.appendText("=== PRUEBA 2: PATRÓN PROXY (MEMORIA Y CACHÉ) ===\n");
+            txtAuditoria.appendText("[CLIENTE] Pidiendo el gráfico al Proxy intermediario...\n");
 
             new Thread(() -> {
                 long t1 = System.currentTimeMillis();
-                txtAuditoria.appendText("[PROXY] Evaluando mapa de memoria caché para el usuario '" + txtUsuario.getText() + "'...\n");
+                txtAuditoria.appendText("[PROXY] Revisando si ya tenemos guardado el gráfico de '" + txtUsuario.getText() + "'...\n");
 
                 Node reporte = proxyService.generarReporte(txtUsuario.getText());
                 long t2 = System.currentTimeMillis();
 
                 Platform.runLater(() -> {
                     if (proxyService.isVieneDeCache()) {
-                        mostrarReporte(areaReporte, reporte, lblTiempo, (t2 - t1), lblEstado, "HIT CACHÉ");
-                        txtAuditoria.appendText("[PROXY] RESULTADO: ¡Caché encontrada (HIT)!\n");
-                        txtAuditoria.appendText("[PROXY] Se detiene la llamada a la BD real. Retorno instantáneo (" + (t2 - t1) + "ms).\n");
+                        mostrarReporte(areaReporte, reporte, lblTiempo, (t2 - t1), lblEstado, "ENCONTRADO EN MEMORIA (CACHÉ)");
+                        txtAuditoria.appendText("[PROXY] ¡RESULTADO: Ya estaba guardado!\n");
+                        txtAuditoria.appendText("[PROXY] No fuimos a la Base de Datos. Se entregó de inmediato en " + (t2 - t1) + " ms.\n");
                     } else {
-                        mostrarReporte(areaReporte, reporte, lblTiempo, (t2 - t1), lblEstado, "MISS CACHÉ");
-                        txtAuditoria.appendText("[PROXY] RESULTADO: No está en memoria (MISS).\n");
-                        txtAuditoria.appendText("[PROXY -> BD] Petición redirigida al servicio real (" + (t2 - t1) + "ms).\n");
-                        txtAuditoria.appendText("[PROXY] Gráfico guardado exitosamente en caché para la próxima llamada.\n");
+                        mostrarReporte(areaReporte, reporte, lblTiempo, (t2 - t1), lblEstado, "NO ESTABA EN MEMORIA (GUARDANDO)");
+                        txtAuditoria.appendText("[PROXY] RESULTADO: No estaba guardado.\n");
+                        txtAuditoria.appendText("[PROXY -> BD] Fuimos a la Base de Datos a crearlo (" + (t2 - t1) + " ms).\n");
+                        txtAuditoria.appendText("[PROXY] Ya lo guardamos en memoria para la próxima vez.\n");
                     }
                 });
             }).start();
@@ -103,12 +103,12 @@ public class HelloApplication extends Application {
         btnDecorator.setOnAction(e -> {
             prepararEjecucion(areaReporte, lblEstado, txtAuditoria, "Aplicando Decoradores...");
 
-            txtAuditoria.appendText("=== PRUEBA 3: PATRÓN DECORATOR (EXTENSIÓN EN CAPAS) ===\n");
-            txtAuditoria.appendText("[CLIENTE] Construyendo envoltorio multinivel en tiempo de ejecución:\n");
-            txtAuditoria.appendText("          -> WatermarkDecorador\n");
-            txtAuditoria.appendText("             -> EncabezadoDecorador\n");
-            txtAuditoria.appendText("                -> MarcoDecorador\n");
-            txtAuditoria.appendText("                   -> ServicioBase (Gráfico puro)\n");
+            txtAuditoria.appendText("=== PRUEBA 3: PATRÓN DECORATOR (AGREGAR DETALLES VISUALES) ===\n");
+            txtAuditoria.appendText("[CLIENTE] Armando el diseño por partes:\n");
+            txtAuditoria.appendText("          -> Marca de agua\n");
+            txtAuditoria.appendText("             -> Texto de Encabezado\n");
+            txtAuditoria.appendText("                -> Marco azul\n");
+            txtAuditoria.appendText("                   -> Gráfico original\n");
 
             new Thread(() -> {
                 long t1 = System.currentTimeMillis();
@@ -123,59 +123,57 @@ public class HelloApplication extends Application {
                 long t2 = System.currentTimeMillis();
 
                 Platform.runLater(() -> {
-                    mostrarReporte(areaReporte, reporteFinal, lblTiempo, (t2 - t1), lblEstado, "Envoltorios Aplicados");
-                    txtAuditoria.appendText("[BASE] 1. 'ReporteServiceImpl' entrega el gráfico primario.\n");
-                    txtAuditoria.appendText("[DECORATOR] 2. 'MarcoDecorador' envuelve la vista con borde y sombra CSS.\n");
-                    txtAuditoria.appendText("[DECORATOR] 3. 'EncabezadoDecorador' adjunta la cabecera confidencial superior.\n");
-                    txtAuditoria.appendText("[DECORATOR] 4. 'WatermarkDecorador' superpone la marca de agua flotante.\n");
-                    txtAuditoria.appendText("[AUDITORÍA] Extensibilidad cumplida: Ninguna clase conoce la implementación de las demás.\n");
+                    mostrarReporte(areaReporte, reporteFinal, lblTiempo, (t2 - t1), lblEstado, "Detalles Visuales Agregados");
+                    txtAuditoria.appendText("[PASO 1] El servicio genera el gráfico normal.\n");
+                    txtAuditoria.appendText("[PASO 2] 'MarcoDecorador' le pone el borde azul alrededor.\n");
+                    txtAuditoria.appendText("[PASO 3] 'EncabezadoDecorador' le agrega el título rojo arriba.\n");
+                    txtAuditoria.appendText("[PASO 4] 'WatermarkDecorador' le pone la marca de agua transparente encima.\n");
+                    txtAuditoria.appendText("[VENTAJA] Le agregamos de todo al gráfico sin modificar su código original.\n");
                 });
             }).start();
         });
 
-        // --- 4. EVENTO SINERGIA TOTAL (PROXY + DECORATOR DETALLADO) ---
+        // --- 4. EVENTO SINERGIA TOTAL (PROXY + DECORATOR) ---
         btnSinergia.setOnAction(e -> {
-            prepararEjecucion(areaReporte, lblEstado, txtAuditoria, "Sinergia Proxy + Decorator...");
+            prepararEjecucion(areaReporte, lblEstado, txtAuditoria, "Uniendo Proxy + Decorator...");
 
-            txtAuditoria.appendText("=== PRUEBA 4: COMBINACIÓN Y ARQUITECTURA (PROXY + DECORATOR) ===\n");
-            txtAuditoria.appendText("[ARQUITECTURA] Cadena de Invocación:\n");
-            txtAuditoria.appendText("   [Cliente] -> EncabezadoDecorador -> MarcoDecorador -> ReporteProxy -> ReporteServiceImpl\n");
+            txtAuditoria.appendText("=== PRUEBA 4: COMBINACIÓN (PROXY + DECORATOR) ===\n");
+            txtAuditoria.appendText("[ORDEN DE TRABAJO] ¿Cómo colaboran?\n");
+            txtAuditoria.appendText("   [Cliente] -> Pide diseño -> Decoradores -> Le piden el gráfico al Proxy -> Proxy busca en Memoria/BD\n");
 
             new Thread(() -> {
                 long t1 = System.currentTimeMillis();
 
-                // Construcción de la composición: Decoradores envolviendo al Proxy
+                // Los Decoradores envuelven al Proxy
                 ReporteService servicioCombinado = new EncabezadoDecorador(
                         new MarcoDecorador(proxyService)
                 );
 
-                txtAuditoria.appendText("[EJECUCIÓN] Iniciando llamada desde la capa externa...\n");
+                txtAuditoria.appendText("[EJECUCIÓN] Iniciando la petición...\n");
                 Node reporteCombinado = servicioCombinado.generarReporte(txtUsuario.getText());
                 long t2 = System.currentTimeMillis();
 
                 Platform.runLater(() -> {
                     boolean cacheHit = proxyService.isVieneDeCache();
-                    String estadoMsg = cacheHit ? "SINERGIA: HIT DE CACHÉ + DECORACIÓN INSTANTÁNEA" : "SINERGIA: CARGA BASE + DECORACIÓN";
+                    String estadoMsg = cacheHit ? "RESPUESTA RÁPIDA CON DISEÑO COMPLETO" : "PRIMERA CARGA CON DISEÑO";
 
                     mostrarReporte(areaReporte, reporteCombinado, lblTiempo, (t2 - t1), lblEstado, estadoMsg);
 
-                    txtAuditoria.appendText("\n--- FASE 1: CAPA PROXY (ACCESO Y OPTIMIZACIÓN) ---\n");
+                    txtAuditoria.appendText("\n--- PARTE 1: TRABAJO DEL PROXY (VELOCIDAD) ---\n");
                     if (cacheHit) {
-                        txtAuditoria.appendText("[PROXY] Status: HIT DE CACHÉ.\n");
-                        txtAuditoria.appendText("[PROXY] Objeto gráfico recuperado de la memoria RAM en " + (t2 - t1) + " ms.\n");
-                        txtAuditoria.appendText("[PROXY] Se omitió por completo el tiempo de espera de la Base de Datos.\n");
+                        txtAuditoria.appendText("[PROXY] ¡Encontrado en memoria!\n");
+                        txtAuditoria.appendText("[PROXY] Nos entregó el gráfico rápido en " + (t2 - t1) + " ms sin ir a la BD.\n");
                     } else {
-                        txtAuditoria.appendText("[PROXY] Status: MISS DE CACHÉ.\n");
-                        txtAuditoria.appendText("[PROXY] No estaba en memoria. Se delega la generación pesada a 'ReporteServiceImpl'.\n");
-                        txtAuditoria.appendText("[PROXY] El gráfico resultante fue almacenado en caché para llamadas futuras.\n");
+                        txtAuditoria.appendText("[PROXY] No estaba en memoria.\n");
+                        txtAuditoria.appendText("[PROXY] Fue a la BD por primera vez y guardó el gráfico para después.\n");
                     }
 
-                    txtAuditoria.appendText("\n--- FASE 2: CAPAS DECORATOR (TRANSFORMACIÓN VISUAL) ---\n");
-                    txtAuditoria.appendText("[DECORATOR] 1. 'MarcoDecorador' recibió el gráfico (desde el Proxy) y le adosó borde/sombra CSS.\n");
-                    txtAuditoria.appendText("[DECORATOR] 2. 'EncabezadoDecorador' tomó el resultado enmarcado y le insertó el membrete rojo superior.\n");
+                    txtAuditoria.appendText("\n--- PARTE 2: TRABAJO DEL DECORATOR (DISEÑO) ---\n");
+                    txtAuditoria.appendText("[DECORATOR] 1. Tomó el gráfico que dio el Proxy y le puso el marco azul.\n");
+                    txtAuditoria.appendText("[DECORATOR] 2. Luego le puso el texto rojo arriba.\n");
 
-                    txtAuditoria.appendText("\n--- CONCLUSIÓN ARQUITECTÓNICA ---\n");
-                    txtAuditoria.appendText("[ÉXITO] Proxy garantizó la velocidad de respuesta (" + (t2 - t1) + " ms) y Decorator la flexibilidad estética sin acoplamiento.");
+                    txtAuditoria.appendText("\n--- RESUMEN SENCILLO ---\n");
+                    txtAuditoria.appendText("[ÉXITO] El Proxy hace que abra súper rápido (" + (t2 - t1) + " ms) y el Decorator le pone los adornos visuales.");
                 });
             }).start();
         });
@@ -186,7 +184,7 @@ public class HelloApplication extends Application {
 
         HBox metrics = new HBox(20, new Label("Tiempo respuesta:"), lblTiempo, new Label("Estado del sistema:"), lblEstado);
 
-        VBox layout = new VBox(10, topBox, metrics, areaReporte, new Label("Auditor de Ejecución (Trazabilidad):"), txtAuditoria);
+        VBox layout = new VBox(10, topBox, metrics, areaReporte, new Label("Auditor de Ejecución (Paso a Paso):"), txtAuditoria);
         layout.setPadding(new Insets(15));
 
         primaryStage.setScene(new Scene(layout, 820, 600));
